@@ -21,6 +21,30 @@ export interface StaffProfile {
   tenant: StaffProfileTenant;
 }
 
+export interface UpdateStaffProfileDto {
+  fullName?: string;
+  phone?: string;
+}
+
+export interface ChangeStaffPasswordDto {
+  currentPassword: string;
+  newPassword: string;
+}
+
 export async function getStaffProfile(): Promise<StaffProfile> {
   return transportApiFetch<StaffProfile>("/staff/me/profile");
+}
+
+export async function updateStaffProfile(dto: UpdateStaffProfileDto) {
+  return transportApiFetch<StaffProfile>("/staff/me/profile", {
+    method: "PATCH",
+    body: JSON.stringify(dto),
+  });
+}
+
+export async function changeStaffPassword(dto: ChangeStaffPasswordDto) {
+  return transportApiFetch<{ changed: boolean }>("/staff/me/password", {
+    method: "PATCH",
+    body: JSON.stringify(dto),
+  });
 }

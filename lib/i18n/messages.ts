@@ -257,6 +257,16 @@ export const en = {
   "profile.staffId": "Staff ID",
   "profile.phone": "Phone",
   "profile.school": "School",
+  "profile.fullName": "Full name",
+  "profile.edit": "Edit",
+  "profile.updated": "Profile updated",
+  "profile.changePassword": "Change password",
+  "profile.currentPassword": "Current password",
+  "profile.newPassword": "New password",
+  "profile.passwordChanged": "Password changed",
+  "profile.incorrectPassword": "Current password is incorrect",
+  "profile.phoneInUse": "This phone number is already in use",
+  "profile.error": "Error",
 } as const;
 
 export type MessageKey = keyof typeof en;
@@ -520,4 +530,14 @@ export const ar: Record<MessageKey, string> = {
   "profile.staffId": "الرقم الوظيفي",
   "profile.phone": "الهاتف",
   "profile.school": "المدرسة",
+  "profile.fullName": "الاسم الكامل",
+  "profile.edit": "تعديل",
+  "profile.updated": "تم التحديث",
+  "profile.changePassword": "تغيير كلمة المرور",
+  "profile.currentPassword": "كلمة المرور الحالية",
+  "profile.newPassword": "كلمة المرور الجديدة",
+  "profile.passwordChanged": "تم تغيير كلمة المرور",
+  "profile.incorrectPassword": "كلمة المرور الحالية غير صحيحة",
+  "profile.phoneInUse": "رقم الهاتف مستخدم مسبقاً",
+  "profile.error": "خطأ",
 };
