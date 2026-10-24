@@ -46,11 +46,19 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center bg-muted/40 p-4">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-sidebar p-4">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -top-24 -start-24 h-80 w-80 rounded-full bg-primary/20 blur-3xl"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -bottom-32 -end-20 h-96 w-96 rounded-full bg-emerald-400/10 blur-3xl"
+      />
       <div className="absolute top-4 end-4">
         <LanguageToggle />
       </div>
-      <Card className="w-full max-w-sm">
+      <Card className="w-full max-w-sm shadow-xl shadow-primary/5 ring-1 ring-border/60">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">{t("login.title")}</CardTitle>
           <CardDescription>{t("login.subtitle")}</CardDescription>

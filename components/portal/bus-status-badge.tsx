@@ -20,6 +20,9 @@ export function StatusBadge({ status }: { status: BusStatus }) {
   const { t } = useI18n();
   return (
     <Badge variant="outline" className={CLS[status]}>
+      {status === "ACTIVE" && (
+        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+      )}
       {t(KEY[status])}
     </Badge>
   );

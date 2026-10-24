@@ -28,7 +28,7 @@ export default function PortalLayout({
 }) {
   return (
     <CurrencyProvider>
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-linear-to-b from-primary/[0.07] via-background to-background">
         <TenantLockedNotice />
         <Suspense fallback={<SidebarFallback />}>
           <Sidebar />
