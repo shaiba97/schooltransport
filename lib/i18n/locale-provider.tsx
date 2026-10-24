@@ -99,14 +99,23 @@ export function interpolate(
   });
 }
 
-export function LocaleProvider({ children }: { children: ReactNode }) {
-  // The server renders every string in English (no runtime IO in the root
-  // layout under Cache Components), so the hydration pass is pinned to
-  // "en"; Arabic clients reconcile right after hydration completes.
+export function LocaleProvider({
+  initialLocale = "en",
+  children,
+}: {
+  /** Locale the server rendered with (read from the cookie in the root
+   *  layout). Pinned as the server snapshot so every hydration render —
+   *  including late-attaching streamed boundaries — replays against the
+   *  exact string set the server HTML contains, never raising a
+   *  hydration mismatch. */
+  initialLocale?: Locale;
+  children: ReactNode;
+}) {
+  const serverSnapshot = useCallback(() => initialLocale, [initialLocale]);
   const locale = useSyncExternalStore(
     subscribeToLocale,
     readClientLocale,
-    (): Locale => "en",
+    serverSnapshot,
   );
   const dir: TextDirection = locale === "ar" ? "rtl" : "ltr";
 

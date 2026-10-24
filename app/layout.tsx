@@ -1,8 +1,17 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
+import { connection } from "next/server";
 import { Geist, Geist_Mono } from "next/font/google";
-import { LOCALE_COOKIE } from "@/lib/i18n/config";
+import { directionOf, isPortalLocale, LOCALE_COOKIE, type PortalLocale } from "@/lib/i18n/config";
 import { LocaleProvider } from "@/lib/i18n/locale-provider";
 import "./globals.css";
+
+// The locale cookie decides <html lang>/dir and every server-rendered
+// string, so the layout segment has no meaningful static shell before it
+// is known. connection() stops prerendering before the cookie read, and
+// instant = false permits the layout segment to block and render per
+// request (the documented pairing; Cache Components rejects either alone).
+export const instant = false;
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,18 +28,21 @@ export const metadata: Metadata = {
   description: "Manage the school fleet, bus routes, student transport assignments, and live trips",
 };
 
-// Applied before first paint so Arabic sessions never flash an LTR layout:
-// cookie first (consistent with LocaleProvider's client snapshot), then the
-// legacy localStorage key, then the browser language. Text is corrected
-// right after hydration (server snapshot = en is pinned during hydration),
-// so the pre-paint script only needs to align lang/dir.
+// Applied before first paint. With the server now rendering the request's
+// locale, the script only matters for legacy clients whose preference sits
+// in localStorage but has not yet been mirrored into the cookie.
 const localeScript = `try{var d=document.documentElement,p;try{var m=document.cookie.match(/(?:^|; )${LOCALE_COOKIE}=(en|ar)/);p=m?m[1]:null;}catch(e){}if(p!=="ar"&&p!=="en"){try{var s=localStorage.getItem("tr_locale");if(s==="ar"||s==="en")p=s;}catch(e){}}if(p!=="ar"&&p!=="en"){p=navigator.language&&navigator.language.indexOf("ar")===0?"ar":"en";}d.lang=p;d.dir=p==="ar"?"rtl":"ltr";}catch(e){}`;
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  await connection();
+  const jar = await cookies();
+  const raw = jar.get(LOCALE_COOKIE)?.value;
+  const locale: PortalLocale = isPortalLocale(raw) ? raw : "en";
+
   return (
     <html
-      lang="en"
-      dir="ltr"
+      lang={locale}
+      dir={directionOf(locale)}
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
@@ -38,7 +50,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <script dangerouslySetInnerHTML={{ __html: localeScript }} />
       </head>
       <body className="min-h-full flex flex-col">
-        <LocaleProvider>{children}</LocaleProvider>
+        <LocaleProvider initialLocale={locale}>{children}</LocaleProvider>
       </body>
     </html>
   );
