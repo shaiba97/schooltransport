@@ -131,7 +131,7 @@ export default function RoutesPage() {
             {t("routes.subtitle")}
           </p>
         </div>
-        <Button onClick={openCreate}>
+        <Button className="bg-transport-accent text-transport-accent-foreground hover:bg-transport-accent/85" onClick={openCreate}>
           <Plus className="h-4 w-4 me-1" /> {t("routes.addRoute")}
         </Button>
       </div>

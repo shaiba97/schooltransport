@@ -12,7 +12,6 @@ import {
 } from "@/lib/realtime/socket";
 import { useI18n } from "@/lib/i18n/locale-provider";
 import { fmtShortTime } from "@/lib/i18n/format";
-import { cn } from "@/lib/utils";
 import { Bus, Route, Users, MapPin, Radio } from "lucide-react";
 
 interface LiveEvent {
@@ -106,7 +105,6 @@ export default function DashboardPage() {
         <StatCard
           icon={MapPin}
           labelKey="dashboard.statVehicles"
-          tone="primary"
           loading={!stats}
           value={stats ? String(stats.vehicles.total) : ""}
           sub={
@@ -122,7 +120,6 @@ export default function DashboardPage() {
         <StatCard
           icon={Route}
           labelKey="dashboard.statRoutes"
-          tone="blue"
           loading={!stats}
           value={stats ? String(stats.routes) : ""}
           sub={stats ? t("dashboard.statRoutesSub") : ""}
@@ -130,7 +127,6 @@ export default function DashboardPage() {
         <StatCard
           icon={Users}
           labelKey="dashboard.statStudents"
-          tone="emerald"
           loading={!stats}
           value={stats ? String(stats.studentsAssigned) : ""}
           sub={stats ? t("dashboard.statStudentsSub") : ""}
@@ -138,7 +134,6 @@ export default function DashboardPage() {
         <StatCard
           icon={Bus}
           labelKey="dashboard.statTrips"
-          tone="rose"
           loading={!stats}
           value={stats ? String(stats.tripsToday.total) : ""}
           sub={
@@ -155,37 +150,25 @@ export default function DashboardPage() {
   );
 }
 
-type StatTone = "primary" | "blue" | "emerald" | "rose";
-
-// Literal class strings so Tailwind can see every variant pair.
-const TONE_CHIP: Record<StatTone, string> = {
-  primary: "bg-primary/10 text-primary",
-  blue: "bg-blue-500/10 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400",
-  emerald: "bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400",
-  rose: "bg-rose-500/10 text-rose-600 dark:bg-rose-500/15 dark:text-rose-400",
-};
-
 function StatCard({
   icon: Icon,
   labelKey,
   value,
   sub,
   loading,
-  tone,
 }: {
   icon: React.ComponentType<{ className?: string }>;
   labelKey: "dashboard.statVehicles" | "dashboard.statRoutes" | "dashboard.statStudents" | "dashboard.statTrips";
   value: string;
   sub: string;
   loading: boolean;
-  tone: StatTone;
 }) {
   const { t } = useI18n();
   return (
     <Card className="transition-shadow hover:shadow-md">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">{t(labelKey)}</CardTitle>
-        <span className={cn("flex h-9 w-9 items-center justify-center rounded-lg", TONE_CHIP[tone])}>
+        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
           <Icon className="h-4 w-4" />
         </span>
       </CardHeader>
@@ -212,17 +195,17 @@ function RealtimeBadge({
 }) {
   const { t } = useI18n();
   return status === "live" ? (
-    <Badge variant="outline" className="gap-1.5 text-emerald-600 border-emerald-600/40">
+    <Badge variant="outline" className="gap-1.5 text-success border-success/40">
       <span className="relative flex h-2 w-2">
-        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75" />
-        <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-75" />
+        <span className="relative inline-flex h-2 w-2 rounded-full bg-success" />
       </span>{" "}
       {t("dashboard.live")}
     </Badge>
   ) : status === "offline" ? (
     <Badge variant="outline" className="text-muted-foreground">{t("dashboard.offline")}</Badge>
   ) : status === "refreshed" ? (
-    <Badge variant="outline" className="text-emerald-600">{t("dashboard.reconnected")}</Badge>
+    <Badge variant="outline" className="text-success">{t("dashboard.reconnected")}</Badge>
   ) : (
     <Badge variant="outline" className="text-muted-foreground">{t("dashboard.connecting")}</Badge>
   );

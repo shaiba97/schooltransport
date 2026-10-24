@@ -221,8 +221,7 @@ function TripsContent() {
           <CardTitle className="flex items-center justify-between">
             <span>{t("trips.tripControl")}</span>
             {trip?.status === "IN_PROGRESS" && (
-              <Badge className="bg-emerald-600 text-white">{t("status.inProgress")}</Badge>
-            )}
+              <Badge className="bg-success text-success-foreground">{t("status.inProgress")}</Badge>            )}
           </CardTitle>
           {selectedRoute && (
             <CardDescription>
@@ -288,7 +287,7 @@ function TripsContent() {
                           {s.sequence}. {s.name}
                         </span>
                         {arrived && (
-                          <span className="text-xs text-emerald-600">
+                          <span className="text-xs text-success">
                             {t("trips.arrivedAt", {
                               time: (trip?.events ?? [])
                                 .filter((e) => e.stopId === s.id && e.type === "ARRIVED_STOP")
@@ -357,8 +356,7 @@ function TripsContent() {
                     <TableCell>{t2.completedAt ? fmtTime(t2.completedAt, locale) : "—"}</TableCell>
                     <TableCell>
                       {t2.status === "IN_PROGRESS" ? (
-                        <Badge className="bg-emerald-600 text-white">{t("status.inProgress")}</Badge>
-                      ) : (
+                        <Badge className="bg-success text-success-foreground">{t("status.inProgress")}</Badge>                      ) : (
                         <Badge variant="outline">{t("status.completed")}</Badge>
                       )}
                     </TableCell>
@@ -384,8 +382,8 @@ function RealtimeBadge({
   const { t } = useI18n();
   if (status === "live") {
     return (
-      <Badge variant="outline" className="gap-1 text-emerald-600 border-emerald-600/40">
-        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> {t("trips.liveUpdates")}
+      <Badge variant="outline" className="gap-1 text-success border-success/40">
+        <span className="h-1.5 w-1.5 rounded-full bg-success" /> {t("trips.liveUpdates")}
       </Badge>
     );
   }

@@ -5,8 +5,8 @@ import type { BusStatus } from "@/lib/api/types";
 import { useI18n } from "@/lib/i18n/locale-provider";
 
 const CLS: Record<BusStatus, string> = {
-  ACTIVE: "text-emerald-600 border-emerald-600/40",
-  MAINTENANCE: "text-amber-600 border-amber-600/40",
+  ACTIVE: "text-success border-success/40",
+  MAINTENANCE: "text-warning border-warning/40",
   INACTIVE: "text-muted-foreground",
 };
 
@@ -21,7 +21,7 @@ export function StatusBadge({ status }: { status: BusStatus }) {
   return (
     <Badge variant="outline" className={CLS[status]}>
       {status === "ACTIVE" && (
-        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+        <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse" />
       )}
       {t(KEY[status])}
     </Badge>

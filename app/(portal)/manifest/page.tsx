@@ -27,8 +27,8 @@ const PAGE_SIZE = 50;
 
 const FEE_CLS: Record<ManifestFeeStatus, string> = {
   NOT_BILLED: "text-muted-foreground",
-  PAID: "text-emerald-600 border-emerald-600/40",
-  PARTIAL: "text-amber-600 border-amber-600/40",
+PAID: "text-success border-success/40",
+PARTIAL: "text-warning border-warning/40",
   PENDING: "text-destructive border-destructive/40",
 };
 
@@ -205,7 +205,7 @@ export default function ManifestPage() {
             {t("manifest.subtitle")}
           </p>
         </div>
-        <Button onClick={openAssign}>
+        <Button className="bg-transport-accent text-transport-accent-foreground hover:bg-transport-accent/85" onClick={openAssign}>
           <UserPlus className="h-4 w-4 me-1" /> {t("manifest.assignStudent")}
         </Button>
       </div>

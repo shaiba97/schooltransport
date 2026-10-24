@@ -358,7 +358,7 @@ function RouteDetailContent() {
                       <TableCell>{fmtTime(t2.startedAt, locale)}</TableCell>
                       <TableCell>
                         {t2.status === "IN_PROGRESS" ? (
-                          <Badge className="bg-emerald-600 text-white">{t("status.inProgress")}</Badge>
+                          <Badge className="bg-success text-success-foreground">{t("status.inProgress")}</Badge>
                         ) : (
                           <Badge variant="outline">{t("status.completed")}</Badge>
                         )}

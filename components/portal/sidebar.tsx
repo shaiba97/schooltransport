@@ -28,7 +28,7 @@ export function Sidebar() {
 
   return (
     <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 border-e bg-sidebar">
-      <div className="flex h-16 items-center border-b px-6">
+      <div className="flex h-16 items-center border-b border-sidebar-border px-6">
         <h1 className="text-lg font-semibold">{t("nav.portalTitle")}</h1>
       </div>
       <nav className="flex-1 space-y-1 p-3 overflow-y-auto">
@@ -41,11 +41,16 @@ export function Sidebar() {
               className={cn(
                 "flex items-center gap-3 rounded-md border-s-2 px-3 py-2 text-sm font-medium transition-colors",
                 isActive
-                  ? "border-s-primary bg-primary/10 text-primary font-semibold"
+                  ? "border-s-sidebar-primary bg-sidebar-accent text-sidebar-accent-foreground font-semibold"
                   : "border-transparent text-sidebar-foreground/70 hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground"
               )}
             >
-              <item.icon className="h-4 w-4 shrink-0" />
+              <item.icon
+                className={cn(
+                  "h-4 w-4 shrink-0",
+                  isActive ? "text-sidebar-primary" : ""
+                )}
+              />
               {t(item.labelKey)}
             </Link>
           );

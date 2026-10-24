@@ -10,7 +10,7 @@ import { UserRound } from "lucide-react";
 export function PortalHeader() {
   const { t } = useI18n();
   return (
-    <header className="hidden lg:flex h-16 items-center justify-end gap-2 border-b px-6 bg-sidebar/80 backdrop-blur-md">
+    <header className="hidden lg:flex h-16 items-center justify-end gap-2 border-b px-6 bg-card">
       <LanguageToggle />
       <Link href="/profile" className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}>
         <UserRound className="h-4 w-4 me-2" />

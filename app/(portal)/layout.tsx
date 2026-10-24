@@ -28,7 +28,7 @@ export default function PortalLayout({
 }) {
   return (
     <CurrencyProvider>
-      <div className="min-h-screen bg-linear-to-b from-primary/[0.07] via-background to-background">
+      <div className="min-h-screen bg-background">
         <TenantLockedNotice />
         <Suspense fallback={<SidebarFallback />}>
           <Sidebar />
@@ -36,7 +36,7 @@ export default function PortalLayout({
         <MobileTopBar />
         <div className="lg:ps-64 flex flex-col min-h-screen">
           <PortalHeader />
-          <main className="flex-1 p-4 lg:p-6 pb-20 lg:pb-6">{children}</main>
+          <main className="flex-1 p-4 lg:p-6 pb-28 lg:pb-6">{children}</main>
         </div>
         <Suspense fallback={<BottomNavFallback />}>
           <BottomNav />
