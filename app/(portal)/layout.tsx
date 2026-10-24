@@ -2,7 +2,6 @@ import { Suspense } from "react";
 import { TenantLockedNotice } from "@/components/portal/tenant-locked-notice";
 import { Sidebar } from "@/components/portal/sidebar";
 import { MobileTopBar, BottomNav } from "@/components/portal/mobile-nav";
-import { PortalHeader } from "@/components/portal/portal-header";
 import { CurrencyProvider } from "@/components/portal/currency-provider";
 
 // Static shells (no runtime hooks inside) so dynamic routes can prerender:
@@ -35,7 +34,6 @@ export default function PortalLayout({
         </Suspense>
         <MobileTopBar />
         <div className="lg:ps-64 flex flex-col min-h-screen">
-          <PortalHeader />
           <main className="flex-1 p-4 lg:p-6 pb-28 lg:pb-6">{children}</main>
         </div>
         <Suspense fallback={<BottomNavFallback />}>

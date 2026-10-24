@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useI18n, type MessageKey } from "@/lib/i18n/locale-provider";
+import { LanguageToggle } from "@/components/portal/language-toggle";
 import {
   LayoutDashboard,
   Bus,
@@ -28,8 +29,9 @@ export function Sidebar() {
 
   return (
     <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 border-e bg-sidebar">
-      <div className="flex h-16 items-center border-b border-sidebar-border px-6">
-        <h1 className="text-lg font-semibold">{t("nav.portalTitle")}</h1>
+      <div className="flex h-16 items-center justify-between gap-2 border-b border-border bg-card px-5">
+        <h1 className="text-base font-semibold min-w-0 truncate">{t("nav.portalTitle")}</h1>
+        <LanguageToggle className="scale-90" />
       </div>
       <nav className="flex-1 space-y-1 p-3 overflow-y-auto">
         {navItems.map((item) => {
