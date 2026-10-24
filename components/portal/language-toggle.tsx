@@ -1,33 +1,24 @@
 "use client";
 
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { useI18n, type Locale } from "@/lib/i18n/locale-provider";
+import { Button } from "@/components/ui/button";
+import { useI18n } from "@/lib/i18n/locale-provider";
 import { cn } from "@/lib/utils";
 
+// Compact one-language-at-a-time switch: the button always shows the
+// language it will switch TO, keeping the header space for long titles.
 export function LanguageToggle({ className }: { className?: string }) {
   const { locale, setLocale } = useI18n();
+  const toArabic = locale === "en";
+  const hint = toArabic ? "التبديل إلى العربية" : "Switch to English";
   return (
-    // Force LTR so the segmented control order is stable (En first,
-    // عربي second) in both document directions; the labels themselves
-    // remain in their native scripts.
-    <ToggleGroup
-      dir="ltr"
+    <Button
       variant="outline"
-      size="sm"
-      value={[locale]}
-      onValueChange={(groupValue) => {
-        const next = groupValue[0] as Locale | undefined;
-        if (next) setLocale(next);
-      }}
-      className={cn("shrink-0", className)}
-      aria-label="Language"
+      className={cn("shrink-0 px-3 text-primary", className)}
+      onClick={() => setLocale(toArabic ? "ar" : "en")}
+      aria-label={hint}
+      title={hint}
     >
-      <ToggleGroupItem value="en" aria-label="English" lang="en">
-        EN
-      </ToggleGroupItem>
-      <ToggleGroupItem value="ar" lang="ar">
-        عربي
-      </ToggleGroupItem>
-    </ToggleGroup>
+      {toArabic ? <span lang="ar">عربي</span> : <span lang="en">En</span>}
+    </Button>
   );
 }

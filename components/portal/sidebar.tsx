@@ -29,9 +29,9 @@ export function Sidebar() {
 
   return (
     <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 border-e bg-sidebar">
-      <div className="flex h-16 items-center justify-between gap-2 border-b border-border bg-card px-5">
+      <div className="flex h-16 items-center justify-between gap-2 border-b border-sidebar-border bg-sidebar px-5 text-sidebar-foreground">
         <h1 className="text-base font-semibold min-w-0 truncate">{t("nav.portalTitle")}</h1>
-        <LanguageToggle className="scale-90" />
+        <LanguageToggle />
       </div>
       <nav className="flex-1 space-y-1 p-3 overflow-y-auto">
         {navItems.map((item) => {
