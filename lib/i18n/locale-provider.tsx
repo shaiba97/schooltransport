@@ -6,20 +6,23 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useState,
+  useSyncExternalStore,
   type ReactNode,
 } from "react";
 import { DirectionProvider } from "@/components/ui/direction";
+import { LOCALE_COOKIE, type PortalLocale } from "./config";
 import { ar, en, type MessageKey } from "./messages";
 
 export type { MessageKey };
 
-export type Locale = "en" | "ar";
+export type Locale = PortalLocale;
 export type TextDirection = "ltr" | "rtl";
 
-const STORAGE_KEY = "tr_locale";
+/** Legacy localStorage key (pre-cookie releases). Kept so existing
+ *  browsers migrate transparently; the cookie is canonical now. */
+const LEGACY_STORAGE_KEY = "tr_locale";
 
-export const LOCALE_STORAGE_KEY = STORAGE_KEY;
+export const LOCALE_STORAGE_KEY = LOCALE_COOKIE;
 
 const dictionaries: Record<Locale, Record<MessageKey, string>> = { en, ar };
 
@@ -32,23 +35,57 @@ type I18nContextValue = {
 
 const I18nContext = createContext<I18nContextValue | null>(null);
 
-function readStoredLocale(): Locale {
+function readLocaleCookie(): Locale | null {
   try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored === "ar" || stored === "en") return stored;
+    const entry = document.cookie
+      .split(/;\s*/)
+      .find((part) => part === `${LOCALE_COOKIE}=en` || part === `${LOCALE_COOKIE}=ar`);
+    return entry ? (entry.split("=")[1] as Locale) : null;
+  } catch {
+    return null;
+  }
+}
+
+function persistLocale(locale: Locale) {
+  const secure = window.location.protocol === "https:" ? "; Secure" : "";
+  document.cookie = `${LOCALE_COOKIE}=${locale}; Path=/; Max-Age=${365 * 24 * 60 * 60}; SameSite=Lax${secure}`;
+  try {
+    localStorage.setItem(LEGACY_STORAGE_KEY, locale);
   } catch {
     // storage unavailable
   }
-  if (typeof navigator !== "undefined" && navigator.language?.startsWith("ar")) {
-    return "ar";
-  }
-  return "en";
 }
 
 function applyToDocument(locale: Locale) {
   const el = document.documentElement;
   el.lang = locale;
   el.dir = locale === "ar" ? "rtl" : "ltr";
+}
+
+const LOCALE_CHANGE_EVENT = "tr_locale_change";
+
+function subscribeToLocale(onChange: () => void) {
+  window.addEventListener(LOCALE_CHANGE_EVENT, onChange);
+  return () => window.removeEventListener(LOCALE_CHANGE_EVENT, onChange);
+}
+
+/**
+ * Client-side snapshot: cookie first, then the legacy localStorage key,
+ * then the browser language. The hydration pass is pinned to the server
+ * snapshot (initialLocale) instead, so toggled-on users never hit a
+ * hydration mismatch even when streamed-in boundaries hydrate late.
+ */
+function readClientLocale(): Locale {
+  const cookie = readLocaleCookie();
+  if (cookie === "en" || cookie === "ar") return cookie;
+  try {
+    const stored = localStorage.getItem(LEGACY_STORAGE_KEY);
+    if (stored === "ar" || stored === "en") return stored;
+  } catch {
+    // storage unavailable
+  }
+  if (navigator.language?.startsWith("ar")) return "ar";
+  return "en";
 }
 
 export function interpolate(
@@ -63,26 +100,29 @@ export function interpolate(
 }
 
 export function LocaleProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>("en");
-  const dir = locale === "ar" ? "rtl" : "ltr";
+  // The server renders every string in English (no runtime IO in the root
+  // layout under Cache Components), so the hydration pass is pinned to
+  // "en"; Arabic clients reconcile right after hydration completes.
+  const locale = useSyncExternalStore(
+    subscribeToLocale,
+    readClientLocale,
+    (): Locale => "en",
+  );
+  const dir: TextDirection = locale === "ar" ? "rtl" : "ltr";
 
+  // External-system update only (documentElement) — never setState here.
   useEffect(() => {
-    Promise.resolve().then(() => {
-      const detected = readStoredLocale();
-      setLocaleState(detected);
-      applyToDocument(detected);
-    });
-  }, []);
+    applyToDocument(locale);
+  }, [locale]);
 
-  const setLocale = useCallback((next: Locale) => {
-    setLocaleState(next);
-    applyToDocument(next);
-    try {
-      localStorage.setItem(STORAGE_KEY, next);
-    } catch {
-      // storage unavailable
-    }
-  }, []);
+  const setLocale = useCallback(
+    (next: Locale) => {
+      persistLocale(next);
+      window.dispatchEvent(new Event(LOCALE_CHANGE_EVENT));
+      applyToDocument(next);
+    },
+    [],
+  );
 
   const value = useMemo<I18nContextValue>(() => {
     const dict = dictionaries[locale];
