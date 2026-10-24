@@ -7,7 +7,11 @@ import { cn } from "@/lib/utils";
 export function LanguageToggle({ className }: { className?: string }) {
   const { locale, setLocale } = useI18n();
   return (
+    // Force LTR so the segmented control order is stable (En first,
+    // عربي second) in both document directions; the labels themselves
+    // remain in their native scripts.
     <ToggleGroup
+      dir="ltr"
       variant="outline"
       size="sm"
       value={[locale]}
