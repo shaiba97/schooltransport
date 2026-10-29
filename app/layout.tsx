@@ -5,6 +5,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { directionOf, isPortalLocale, LOCALE_COOKIE, type PortalLocale } from "@/lib/i18n/config";
 import { LocaleProvider } from "@/lib/i18n/locale-provider";
 import "./globals.css";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 // The locale cookie decides <html lang>/dir and every server-rendered
 // string, so the layout segment has no meaningful static shell before it
@@ -51,6 +52,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       </head>
       <body className="min-h-full flex flex-col">
         <LocaleProvider initialLocale={locale}>{children}</LocaleProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
